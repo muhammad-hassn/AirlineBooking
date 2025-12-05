@@ -1,0 +1,198 @@
+{% extends 'flight_search_app/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative bg-white overflow-hidden">
+    <div class="absolute inset-0">
+        <img class="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+            alt="Travel Background">
+        <div class="absolute inset-0 bg-gradient-to-r from-sky-900/90 to-sky-600/80 mix-blend-multiply"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+        <h1
+            class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl text-center drop-shadow-md">
+            Discover Your Next Journey
+        </h1>
+        <p class="mt-6 text-xl text-sky-100 max-w-3xl mx-auto text-center drop-shadow-sm">
+            Compare cheap flights from over 600 airlines and travel agents. No hidden fees, just the best prices.
+        </p>
+
+        <!-- Search Card -->
+        <div class="mt-12 max-w-5xl mx-auto">
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-10 border border-white/20">
+                <form action="{% url 'results' %}" method="GET" class="space-y-6"
+                    onsubmit="document.getElementById('spinner').classList.remove('hidden')">
+
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <!-- Origin -->
+                        <div class="relative">
+                            <label for="origin"
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">From</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="origin" id="origin" placeholder="City or Airport" required
+                                    minlength="3" title="City name or 3-letter IATA code"
+                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 font-bold text-gray-900 placeholder-gray-400">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-400">City name (e.g. London) or IATA Code</p>
+                        </div>
+
+                        <!-- Destination -->
+                        <div class="relative">
+                            <label for="destination"
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">To</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                        </path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="destination" id="destination" placeholder="City or Airport"
+                                    required minlength="3" title="City name or 3-letter IATA code"
+                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 font-bold text-gray-900 placeholder-gray-400">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-400">City name (e.g. Dubai) or IATA Code</p>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="relative">
+                            <label for="departure_date"
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Departure</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <input type="date" name="departure_date" id="departure_date" required
+                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 text-gray-900">
+                            </div>
+                        </div>
+
+                        <!-- Passengers -->
+                        <div class="relative">
+                            <label for="adults"
+                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Passengers</label>
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <input type="number" name="adults" id="adults" min="1" value="1" required
+                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 text-gray-900">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4">
+                        <div class="flex items-center">
+                            <input id="one-way" name="one-way" type="checkbox" checked disabled
+                                class="h-5 w-5 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
+                            <label for="one-way" class="ml-2 block text-sm text-gray-700 font-medium">
+                                One-way only
+                            </label>
+                        </div>
+                        <button type="submit"
+                            class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all duration-200 transform hover:scale-105">
+                            <svg class="mr-2 -ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Search Flights
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading Spinner -->
+                <div id="spinner" class="hidden mt-8">
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
+                        <p class="mt-4 text-sky-600 font-medium animate-pulse">Finding the best deals for you...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-base font-semibold text-sky-600 tracking-wide uppercase">Why Choose TicketTrail</h2>
+            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                Better way to travel
+            </p>
+        </div>
+
+        <div class="mt-10">
+            <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Feature 1 -->
+                <div
+                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Best Price Guarantee</h3>
+                    <p class="mt-2 text-base text-gray-500 text-center">We compare hundreds of sites to find you the
+                        absolute lowest prices.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div
+                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Secure Booking</h3>
+                    <p class="mt-2 text-base text-gray-500 text-center">Your data is protected with state-of-the-art
+                        encryption technology.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div
+                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Instant Confirmation</h3>
+                    <p class="mt-2 text-base text-gray-500 text-center">Get your e-tickets delivered to your inbox
+                        immediately after booking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

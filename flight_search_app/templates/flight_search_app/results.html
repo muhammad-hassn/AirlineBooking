@@ -1,0 +1,75 @@
+{% extends 'flight_search_app/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Flight Results</h1>
+        <p class="mt-2 text-gray-600">Showing flights from <span class="font-semibold text-sky-600">{{ origin }}</span>
+            to <span class="font-semibold text-sky-600">{{ destination }}</span></p>
+    </div>
+
+    {% if flights %}
+    <div class="space-y-6">
+        {% for flight in flights %}
+        <div
+            class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
+            <div class="p-6 sm:flex sm:items-center sm:justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between sm:justify-start sm:space-x-12">
+                        <div>
+                            <p class="text-sm text-gray-500">Airline</p>
+                            <p class="text-lg font-bold text-gray-900">{{ flight.airline }}</p>
+                            <p class="text-xs text-gray-400">{{ flight.flight_number }}</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-gray-900">{{ flight.departure_time|slice:"11:16" }}</p>
+                            <p class="text-sm text-gray-500">{{ flight.origin }}</p>
+                        </div>
+                        <div class="hidden sm:block flex-1 px-4">
+                            <div class="relative flex items-center">
+                                <div class="flex-1 border-t-2 border-gray-300"></div>
+                                <span class="mx-2 text-xs text-gray-400">{{ flight.duration }}</span>
+                                <div class="flex-1 border-t-2 border-gray-300"></div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-gray-900">{{ flight.arrival_time|slice:"11:16" }}</p>
+                            <p class="text-sm text-gray-500">{{ flight.destination }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 sm:mt-0 sm:ml-10 flex flex-col items-center sm:items-end">
+                    <p class="text-3xl font-bold text-sky-600">{{ flight.price }} <span class="text-sm text-gray-500">{{
+                            flight.currency }}</span></p>
+                    <form action="{% url 'payment' %}" method="GET">
+                        <input type="hidden" name="amount" value="{{ flight.price }}">
+                        <input type="hidden" name="currency" value="{{ flight.currency }}">
+                        <input type="hidden" name="route" value="{{ flight.origin }} -> {{ flight.destination }}">
+                        <button type="submit"
+                            class="mt-4 w-full bg-sky-600 border border-transparent rounded-md shadow-sm py-2 px-8 inline-flex justify-center text-sm font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                            Book Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-16 bg-white rounded-lg shadow-sm">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No flights found</h3>
+        <p class="mt-1 text-sm text-gray-500">Try adjusting your search criteria or dates.</p>
+        <div class="mt-6">
+            <a href="{% url 'home' %}"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                New Search
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
