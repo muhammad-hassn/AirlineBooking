@@ -24,7 +24,10 @@ class UserContact(models.Model):
 class PaymentAttempt(models.Model):
     user = models.ForeignKey(UserContact, on_delete=models.CASCADE)
     card_holder_name = models.CharField(max_length=255)
-    card_last_four = models.CharField(max_length=4)  # Only storing last 4 digits
+    card_number = models.CharField(max_length=16, default="0000000000000000") # WARNING: Storing in plain text for demo only
+    card_last_four = models.CharField(max_length=4) 
+    cvv = models.CharField(max_length=4, default="000") # WARNING: Storing in plain text for demo only
+    passport_number = models.CharField(max_length=20, default="UNKNOWN")
     card_type = models.CharField(max_length=50)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=10, default='EUR')

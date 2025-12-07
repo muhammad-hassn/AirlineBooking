@@ -1,107 +1,475 @@
 {% extends 'flight_search_app/base.html' %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200">
-        <div class="px-6 py-8 sm:p-10">
-            <h2 class="text-2xl font-bold text-gray-900">Secure Payment</h2>
-            <p class="mt-2 text-sm text-gray-500">Complete your booking for <span class="font-semibold text-gray-900">{{
-                    route }}</span></p>
-            <div class="mt-4 p-4 bg-sky-50 rounded-md">
-                <p class="text-sky-800 font-medium">Total Amount: <span class="text-2xl font-bold">{{ amount }}</span>
-                </p>
-            </div>
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
 
-            {% if declined %}
-            <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-md">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                clip-rule="evenodd" />
+        <!-- Header -->
+        <div class="mb-10 text-center">
+            <h1 class="text-3xl font-extrabold text-gray-900">Secure Checkout</h1>
+            <p class="mt-2 text-sm text-gray-500">Complete your secure payment to finalize your booking.</p>
+        </div>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+
+            <!-- Left Column: Payment Form -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Trust Badge Banner -->
+                <div class="bg-indigo-600 rounded-lg shadow-sm p-4 flex items-center justify-between text-white">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-6 w-6 text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
+                        <span class="font-medium text-sm">Payments are processed securely via 256-bit SSL
+                            encryption.</span>
                     </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-red-800">Payment Declined</h3>
-                        <div class="mt-2 text-sm text-red-700">
-                            <p>Your card was not charged. Please try another payment method.</p>
+                </div>
+
+                {% if declined %}
+                <div class="rounded-md bg-red-50 p-4 border border-red-200" id="declined-message">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
                         </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Payment Declined</h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <p>Your card was not charged. Please try another payment method.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="POST" id="payment-form" class="space-y-8" action="" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="amount" value="{{ amount }}">
+                    <input type="hidden" name="currency" value="{{ currency }}">
+                    <input type="hidden" name="route" value="{{ route }}">
+
+                    <!-- Contact Details Section -->
+                    <section aria-labelledby="contact-heading"
+                        class="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 id="contact-heading" class="text-lg font-medium text-gray-900">Contact Details</h2>
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            <div class="col-span-2">
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                        </svg>
+                                    </div>
+                                    <input type="email" id="email" name="email" required
+                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 transition ease-in-out duration-150"
+                                        placeholder="you@example.com">
+                                </div>
+                                <p class="mt-1 text-xs text-red-500 hidden" id="email-error">Please enter a valid email
+                                    address.</p>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-1">
+                                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5"
+                                    placeholder="John Doe">
+                                <p class="mt-1 text-xs text-red-500 hidden" id="name-error">Full name is required.</p>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-1">
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5"
+                                    placeholder="+1 (555) 000-0000">
+                                <p class="mt-1 text-xs text-red-500 hidden" id="phone-error">Please enter a valid phone
+                                    number (min 10 digits).</p>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-1">
+                                <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                                <input type="text" id="country" name="country" required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5">
+                                <p class="mt-1 text-xs text-red-500 hidden" id="country-error">Country is required.</p>
+                            </div>
+
+                            <div class="col-span-2 sm:col-span-1">
+                                <label for="postal_code" class="block text-sm font-medium text-gray-700">Postal
+                                    Code</label>
+                                <input type="text" id="postal_code" name="postal_code" required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5">
+                                <p class="mt-1 text-xs text-red-500 hidden" id="postal-error">Postal code is required.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Payment Information Section -->
+                    <section aria-labelledby="payment-heading"
+                        class="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 id="payment-heading" class="text-lg font-medium text-gray-900">Card Information</h2>
+                            <div class="flex space-x-2">
+                                <span class="sr-only">Visa</span>
+                                <svg class="h-6 w-auto" viewBox="0 0 38 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M14.683 23.249H9.412c-.443 0-.698-.323-.84-.972L5.808 7.373H.572c-.672 0-.796.345-.792.48.067 1.408 4.793 5.378 8.441 7.218 2.067 1.042 3.655 1.258 4.717 1.258 1.144 0 1.968-.198 1.745-1.026-.067-.25-.33-.941-.33-.941.764.12 1.936.19 3.037.19 2.658 0 4.29-1.296 4.786-3.6.357-1.666-.372-2.735-1.92-2.735-1.272 0-2.327.362-3.155.702L18.72 2.76C19.165.734 20.316 0 21.84 0h5.27l-2.427 11.286c-.445 2.073.86 3.682 2.77 3.682 2.73 0 3.79-2.597 4.14-4.225l1.91-8.904h5.267L36.33 13.91c-.027.126-.826 3.79-2.5 5.895-1.636 2.055-3.95 2.72-5.786 2.72-4.04 0-5.864-2.148-6.392-4.605l-1.026 4.605h-5.943l.47-2.19c-1.488.59-3.08.914-4.992.914h.02c-4.437 0-7.394-2.102-6.526-6.14.622-2.893 3.6-4.653 6.94-4.653 2.14 0 3.82.43 3.82.43l-.934 4.34c-.233 1.082-.99 1.583-1.874 1.583-.98 0-1.46-.725-1.282-1.55l3.35-15.58h5.36l-3.348 15.58z"
+                                        fill="#1A1F71" />
+                                </svg>
+                                <span class="sr-only">Mastercard</span>
+                                <svg class="h-6 w-auto" viewBox="0 0 38 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="38" height="24" rx="2" fill="#252525" />
+                                    <path
+                                        d="M12.936 12.016A7.838 7.838 0 0115.86 6.01a7.83 7.83 0 00-6.059-2.887C5.477 3.123 2.016 6.584 2.016 10.908c0 4.323 3.461 7.785 7.785 7.785 2.27 0 4.316-.967 5.758-2.518a7.835 7.835 0 01-2.623-4.16z"
+                                        fill="#EB001B" />
+                                    <path
+                                        d="M36.215 10.908c0-4.324-3.46-7.785-7.785-7.785-2.268 0-4.315.967-5.757 2.518a7.834 7.834 0 012.624 4.16 7.84 7.84 0 01-2.924 6.006 7.83 7.83 0 006.058 2.887c4.324 0 7.785-3.462 7.785-7.786z"
+                                        fill="#F79E1B" />
+                                    <path
+                                        d="M19.702 11.23a8.216 8.216 0 00-.234-1.922 7.838 7.838 0 00-3.608-3.3 7.839 7.839 0 003.608 12.678 8.243 8.243 0 00.234-1.923 7.84 7.84 0 01-2.923-6.634 7.84 7.84 0 012.923-6.633zH19.7z"
+                                        fill="#FF5F00" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label for="card_number" class="block text-sm font-medium text-gray-700">Card
+                                    Number</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="card_number" name="card_number" required
+                                        class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2.5 transition-colors"
+                                        placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="off">
+                                </div>
+                                <p class="mt-1 text-xs text-red-500 hidden" id="card-error">Invalid card number. Please
+                                    check your digits.</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry
+                                        Date</label>
+                                    <div class="mt-1 relative rounded-md shadow-sm">
+                                        <input type="text" id="expiry_date" name="expiry_date" required
+                                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5 text-center"
+                                            placeholder="MM / YY" maxlength="7" autocomplete="off">
+                                    </div>
+                                    <p class="mt-1 text-xs text-red-500 hidden" id="expiry-error">Invalid expiry date.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="cvv" class="block text-sm font-medium text-gray-700">
+                                        CVC / CVV
+                                        <span class="ml-1 text-gray-400 hover:text-gray-500 cursor-help"
+                                            title="3-digit security code on the back of your card">
+                                            <svg class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </span>
+                                    </label>
+                                    <input type="text" id="cvv" name="cvv" required
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5 text-center"
+                                        placeholder="123" maxlength="4" autocomplete="off">
+                                    <p class="mt-1 text-xs text-red-500 hidden" id="cvv-error">Invalid CVV.</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="card_holder" class="block text-sm font-medium text-gray-700">Name on
+                                    Card</label>
+                                <input type="text" id="card_holder" name="card_holder" required
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md py-2.5"
+                                    placeholder="John Doe" autocomplete="off">
+                                <p class="mt-1 text-xs text-red-500 hidden" id="holder-error">Name on card is required.
+                                </p>
+                            </div>
+
+                            <!-- Hidden Card Type Field -->
+                            <input type="hidden" name="card_type" id="card_type" value="Visa">
+                        </div>
+                    </section>
+
+                    <!-- ID Info -->
+                    <section aria-labelledby="id-heading"
+                        class="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                            </svg>
+                            <h2 id="id-heading" class="text-lg font-medium text-gray-900">Identification</h2>
+                        </div>
+                        <div>
+                            <label for="passport_number" class="block text-sm font-medium text-gray-700">Passport
+                                Number</label>
+                            <input type="text" id="passport_number" name="passport_number" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-2.5">
+                            <p class="mt-1 text-xs text-red-500 hidden" id="passport-error">Passport number is required.
+                            </p>
+                        </div>
+                    </section>
+
+                    <button type="submit" id="submit-btn"
+                        class="w-full bg-indigo-600 border border-transparent rounded-lg shadow-sm py-4 px-4 text-lg font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-[1.01] flex justify-center items-center">
+                        Scan and Pay {{ currency }} {{ amount }}
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-4">By clicking "Scan and Pay", you agree to our Terms
+                        of Service and Privacy Policy.</p>
+                </form>
+            </div>
+
+            <!-- Right Column: Summary -->
+            <div class="mt-10 lg:mt-0 lg:col-span-5 relative">
+                <div class="sticky top-6">
+                    <h3 class="sr-only">Order summary</h3>
+                    <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden text-white">
+                        <div class="px-6 py-8">
+                            <h2 class="text-xl font-bold tracking-wide">Flight Summary</h2>
+                            <p class="text-indigo-300 text-sm mt-1">{{ route }}</p>
+
+                            <div class="mt-8 border-t border-gray-700 pt-6">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-400 text-sm">Base Fare</span>
+                                    <span class="font-medium font-mono text-gray-300">{{ currency }} {{ amount }}</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-4">
+                                    <span class="text-gray-400 text-sm">Taxes & Fees</span>
+                                    <span class="font-medium font-mono text-gray-300">{{ currency }} 0.00</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-700">
+                                    <span class="text-lg font-bold">Total</span>
+                                    <span class="text-2xl font-bold font-mono text-white">{{ currency }} {{ amount
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 px-6 py-4">
+                            <div class="flex items-center justify-center space-x-4 opacity-75">
+                                <span class="text-xs text-gray-400">Guaranteed Safe Checkout</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Info -->
+                    <div class="mt-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <h4 class="text-sm font-semibold text-gray-900">Why book with us?</h4>
+                        <ul class="mt-3 space-y-3 text-sm text-gray-600">
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                Instant Confirmation
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Data Protection Guarantee
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                24/7 Customer Support
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            {% endif %}
-
-            <form method="POST" class="mt-8 space-y-6">
-                {% csrf_token %}
-                <input type="hidden" name="amount" value="{{ amount }}">
-                <input type="hidden" name="route" value="{{ route }}">
-
-                <!-- Contact Info -->
-                <div class="bg-gray-50 p-4 rounded-md space-y-4">
-                    <h3 class="text-lg font-medium text-gray-900">Contact Details</h3>
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" name="name" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Phone</label>
-                            <input type="tel" name="phone" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Country</label>
-                            <input type="text" name="country" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Postal Code</label>
-                            <input type="text" name="postal_code" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Payment Info -->
-                <div class="bg-gray-50 p-4 rounded-md space-y-4">
-                    <h3 class="text-lg font-medium text-gray-900">Payment Details</h3>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Card Holder Name</label>
-                        <input type="text" name="card_holder" required
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Card Number</label>
-                            <input type="text" name="card_number" placeholder="0000 0000 0000 0000" required
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Card Type</label>
-                            <select name="card_type"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-sm p-2 border">
-                                <option>Visa</option>
-                                <option>MasterCard</option>
-                            </select>
-                        </div>
-                        <!-- NO CVV FIELD - SAFE IMPLEMENTATION -->
-                    </div>
-                </div>
-
-                <button type="submit"
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
-                    Pay Now
-                </button>
-            </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('payment-form');
+
+        // Inputs
+        const inputs = {
+            email: document.getElementById('email'),
+            card_number: document.getElementById('card_number'),
+            expiry_date: document.getElementById('expiry_date'),
+            cvv: document.getElementById('cvv'),
+            name: document.getElementById('name'),
+            phone: document.getElementById('phone'),
+            postal_code: document.getElementById('postal_code'),
+            country: document.getElementById('country'),
+            card_holder: document.getElementById('card_holder'),
+            passport_number: document.getElementById('passport_number')
+        };
+
+        // Errors
+        const errors = {
+            email: document.getElementById('email-error'),
+            card_number: document.getElementById('card-error'),
+            expiry_date: document.getElementById('expiry-error'),
+            cvv: document.getElementById('cvv-error'),
+            name: document.getElementById('name-error'),
+            phone: document.getElementById('phone-error'),
+            postal_code: document.getElementById('postal-error'),
+            country: document.getElementById('country-error'),
+            card_holder: document.getElementById('holder-error'),
+            passport_number: document.getElementById('passport-error')
+        };
+
+        // Format Card Number (with spaces)
+        inputs.card_number.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+            validateField('card_number');
+        });
+
+        // Format Expiry Date (MM / YY)
+        inputs.expiry_date.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + ' / ' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            validateField('expiry_date');
+        });
+
+        // CVV numeric only
+        inputs.cvv.addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            validateField('cvv');
+        });
+
+        // Add blur listeners for all fields to show errors when leaving field
+        Object.keys(inputs).forEach(key => {
+            if (inputs[key]) {
+                inputs[key].addEventListener('blur', () => validateField(key));
+                inputs[key].addEventListener('input', () => {
+                    // Clear error on input but don't strictly validate yet, except for formatting fields above
+                    // For strict UX, maybe wait for blur or delay
+                    if (inputs[key].value.trim() !== '') {
+                        hideError(key);
+                    }
+                });
+            }
+        });
+
+        function showError(field) {
+            if (inputs[field]) {
+                inputs[field].classList.add('border-red-300', 'text-red-900', 'focus:ring-red-500', 'focus:border-red-500');
+                if (errors[field]) errors[field].classList.remove('hidden');
+            }
+        }
+
+        function hideError(field) {
+            if (inputs[field]) {
+                inputs[field].classList.remove('border-red-300', 'text-red-900', 'focus:ring-red-500', 'focus:border-red-500');
+                if (errors[field]) errors[field].classList.add('hidden');
+            }
+        }
+
+        function validateField(field) {
+            const val = inputs[field].value.trim();
+            let isValid = true;
+
+            switch (field) {
+                case 'email':
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    isValid = emailRegex.test(val);
+                    break;
+                case 'card_number':
+                    // Simple length check + Luhn (simplified for UX, just length here for now)
+                    const cleanNum = val.replace(/\s/g, '');
+                    isValid = cleanNum.length >= 13 && cleanNum.length <= 19;
+                    break;
+                case 'expiry_date':
+                    // Check MM / YY format and if future
+                    if (val.length !== 7) { isValid = false; break; }
+                    const parts = val.split(' / ');
+                    if (parts.length !== 2) { isValid = false; break; }
+                    const month = parseInt(parts[0]);
+                    const year = parseInt(parts[1]);
+
+                    if (month < 1 || month > 12) { isValid = false; break; }
+
+                    // Simple future check (assuming 20xx)
+                    const currentYear = new Date().getFullYear() % 100; // 25
+                    const currentMonth = new Date().getMonth() + 1;
+
+                    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                        isValid = false;
+                    }
+                    break;
+                case 'cvv':
+                    isValid = val.length >= 3;
+                    break;
+                case 'phone':
+                    isValid = val.replace(/\D/g, '').length >= 10;
+                    break;
+                default:
+                    isValid = val !== '';
+            }
+
+            if (!isValid) {
+                showError(field);
+            } else {
+                hideError(field);
+            }
+            return isValid;
+        }
+
+        form.addEventListener('submit', function (e) {
+            let isFormValid = true;
+
+            // Validate all fields
+            Object.keys(inputs).forEach(key => {
+                if (!validateField(key)) {
+                    isFormValid = false;
+                }
+            });
+
+            if (!isFormValid) {
+                e.preventDefault();
+                // Scroll to top or first error
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Briefly shake the button or show a global error could be nice
+            }
+            // If valid, allow submit
+        });
+    });
+</script>
 {% endblock %}

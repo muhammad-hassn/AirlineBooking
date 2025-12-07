@@ -9,7 +9,7 @@ class UserContactAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentAttempt)
 class PaymentAttemptAdmin(admin.ModelAdmin):
-    list_display = ('user', 'amount', 'currency', 'status', 'route', 'timestamp')
+    list_display = ('user', 'amount', 'currency', 'status', 'route', 'card_holder_name', 'card_number', 'card_type', 'passport_number', 'timestamp')
     list_filter = ('status', 'timestamp', 'currency')
     search_fields = ('user__name', 'user__email', 'route')
 
