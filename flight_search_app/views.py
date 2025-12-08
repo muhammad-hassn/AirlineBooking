@@ -39,6 +39,9 @@ def format_duration(iso_duration):
 def home(request):
     return render(request, 'flight_search_app/search.html')
 
+def about(request):
+    return render(request, 'flight_search_app/about.html')
+
 @login_required(login_url='login')
 def search_results(request):
     if request.method == 'GET':

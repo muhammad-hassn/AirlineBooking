@@ -1,198 +1,144 @@
 {% extends 'flight_search_app/base.html' %}
 
+{% block navbar_class %}absolute w-full z-50 bg-transparent transition-all duration-300{% endblock %}
+
 {% block content %}
-<!-- Hero Section -->
-<div class="relative bg-white overflow-hidden">
-    <div class="absolute inset-0">
-        <img class="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-            alt="Travel Background">
-        <div class="absolute inset-0 bg-gradient-to-r from-sky-900/90 to-sky-600/80 mix-blend-multiply"></div>
+<div class="relative min-h-screen flex flex-col font-sans">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0 bg-slate-200">
+        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2021&q=80" 
+             alt="Travel Desktop Background" 
+             class="w-full h-full object-cover hidden md:block" />
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2073&q=80" 
+             alt="Travel Mobile Background" 
+             class="w-full h-full object-cover block md:hidden" />
+        
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-white/10 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-50/50 to-transparent"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
-        <h1
-            class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl text-center drop-shadow-md">
-            Discover Your Next Journey
-        </h1>
-        <p class="mt-6 text-xl text-sky-100 max-w-3xl mx-auto text-center drop-shadow-sm">
-            Compare cheap flights from over 600 airlines and travel agents. No hidden fees, just the best prices.
-        </p>
+    <!-- Main Content -->
+    <div class="relative z-10 flex-grow flex flex-col justify-center px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full pt-20">
+        
+        <!-- Hero Text -->
+        <div class="max-w-2xl mt-10 lg:mt-0">
+            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6 drop-shadow-sm">
+                Your Gateway To The <br/> World's Most <br/> Exciting Destinations.
+            </h1>
+            <p class="text-lg text-slate-700 mb-8 max-w-lg font-medium leading-relaxed drop-shadow-sm">
+                Don't miss out on our exclusive airline discounts! Book now and enjoy amazing savings on your next flight with TicketTrail.
+            </p>
+            <a href="#search-widget" class="inline-block bg-[#003554] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#002840] transition-colors shadow-lg tracking-wide uppercase text-sm">
+                Book Now
+            </a>
+        </div>
 
-        <!-- Search Card -->
-        <div class="mt-12 max-w-5xl mx-auto">
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-10 border border-white/20">
-                <form action="{% url 'results' %}" method="GET" class="space-y-6"
-                    onsubmit="document.getElementById('spinner').classList.remove('hidden')">
+        <!-- Spacer -->
+        <div class="flex-grow"></div>
 
-                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-4">
-                        <!-- Origin -->
-                        <div class="relative">
-                            <label for="origin"
-                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">From</label>
-                            <div class="relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <input type="text" name="origin" id="origin" placeholder="City or Airport" required
-                                    minlength="3" title="City name or 3-letter IATA code"
-                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 font-bold text-gray-900 placeholder-gray-400">
-                            </div>
-                            <p class="mt-1 text-xs text-gray-400">City name (e.g. London) or IATA Code</p>
+        <!-- Search Widget Area -->
+        <div id="search-widget" class="w-full pb-10 mt-10 lg:mt-20">
+            <!-- Glass Container -->
+            <div class="bg-white/60 backdrop-blur-xl rounded-t-3xl shadow-2xl overflow-hidden border border-white/50">
+                <!-- Tabs -->
+                <div class="flex items-center space-x-4 md:space-x-8 px-4 md:px-8 py-4 border-b border-white/30 text-slate-800 font-semibold text-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
+                    <button class="flex items-center space-x-2 text-[#003554] focus:outline-none flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        <span>Round-trip</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <button class="flex items-center space-x-2 hover:text-[#003554] transition-colors focus:outline-none flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span>1 Adult</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <button class="flex items-center space-x-2 hover:text-[#003554] transition-colors focus:outline-none flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                        <span>Economy</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="flex-grow min-w-[20px]"></div>
+                    <button class="text-sm font-medium text-slate-600 hover:text-slate-900 flex items-center flex-shrink-0">
+                        Explore Map <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Inputs Row -->
+                <form action="{% url 'results' %}" method="GET" class="p-0 lg:flex w-full" onsubmit="document.getElementById('loader').classList.remove('hidden')">
+                    
+                    <!-- From -->
+                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
+                        <label for="origin" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">From</label>
+                        <div class="flex items-center">
+                            <input type="text" name="origin" id="origin" placeholder="City or Airport" required
+                                class="w-full bg-transparent border-none p-0 text-xl font-bold text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
                         </div>
-
-                        <!-- Destination -->
-                        <div class="relative">
-                            <label for="destination"
-                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">To</label>
-                            <div class="relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                        </path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" name="destination" id="destination" placeholder="City or Airport"
-                                    required minlength="3" title="City name or 3-letter IATA code"
-                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 font-bold text-gray-900 placeholder-gray-400">
-                            </div>
-                            <p class="mt-1 text-xs text-gray-400">City name (e.g. Dubai) or IATA Code</p>
-                        </div>
-
-                        <!-- Date -->
-                        <div class="relative">
-                            <label for="departure_date"
-                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Departure</label>
-                            <div class="relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <input type="date" name="departure_date" id="departure_date" required
-                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 text-gray-900">
-                            </div>
-                        </div>
-
-                        <!-- Passengers -->
-                        <div class="relative">
-                            <label for="adults"
-                                class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Passengers</label>
-                            <div class="relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <input type="number" name="adults" id="adults" min="1" value="1" required
-                                    class="focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 sm:text-lg border-gray-300 rounded-lg py-3 text-gray-900">
-                            </div>
-                        </div>
+                        <p class="text-xs text-slate-500 mt-1 truncate">Origin location</p>
                     </div>
 
-                    <div class="flex items-center justify-between pt-4">
-                        <div class="flex items-center">
-                            <input id="one-way" name="one-way" type="checkbox" checked disabled
-                                class="h-5 w-5 text-sky-600 focus:ring-sky-500 border-gray-300 rounded">
-                            <label for="one-way" class="ml-2 block text-sm text-gray-700 font-medium">
-                                One-way only
-                            </label>
-                        </div>
-                        <button type="submit"
-                            class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all duration-200 transform hover:scale-105">
-                            <svg class="mr-2 -ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            Search Flights
+                    <!-- To -->
+                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
+                         <label for="destination" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">To</label>
+                         <div class="flex items-center">
+                             <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                             <input type="text" name="destination" id="destination" placeholder="Enter a destination" required
+                                 class="w-full bg-transparent border-none p-0 text-xl font-medium text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
+                         </div>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
+                         <div class="flex space-x-4 h-full items-center">
+                             <div>
+                                 <label for="departure_date" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Departure</label>
+                                 <div class="flex items-center">
+                                     <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                     <input type="date" name="departure_date" id="departure_date" required
+                                         class="w-full bg-transparent border-none p-0 text-sm font-bold text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
+                                 </div>
+                             </div>
+                             <!-- Hidden return date for visual match (optional) or functionality -->
+                             <div class="hidden lg:block w-px h-10 bg-slate-300"></div>
+                             <div class="hidden lg:block opacity-50">
+                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Return</label>
+                                 <div class="flex items-center text-slate-400 cursor-not-allowed">
+                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                     <span class="text-sm font-bold">Add Return</span>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                
+                    <!-- Hidden fields for defaults -->
+                    <input type="hidden" name="adults" value="1">
+                    
+                    <!-- Search Button -->
+                    <div class="lg:w-1/5 p-4 flex items-center justify-center">
+                        <button type="submit" class="w-full h-full min-h-[60px] bg-[#003554] hover:bg-[#002840] text-white rounded-lg font-bold text-lg shadow-lg flex items-center justify-center transition-all transform hover:scale-[1.02]">
+                            <span>Show flights</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
                     </div>
                 </form>
 
-                <!-- Loading Spinner -->
-                <div id="spinner" class="hidden mt-8">
-                    <div class="flex flex-col items-center justify-center">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
-                        <p class="mt-4 text-sky-600 font-medium animate-pulse">Finding the best deals for you...</p>
-                    </div>
+                <!-- Footer Links in Widget -->
+                <div class="bg-white/40 px-8 py-4 flex justify-between text-xs font-bold text-slate-700 tracking-wider uppercase backdrop-blur-sm border-t border-white/30 hidden sm:flex">
+                     <a href="#" class="hover:text-[#003554] transition-colors">Manage Booking</a>
+                     <a href="#" class="hover:text-[#003554] transition-colors">Check-in</a>
+                     <a href="#" class="hover:text-[#003554] transition-colors">Travel Points</a>
+                     <a href="#" class="hover:text-[#003554] transition-colors">Flight Schedule</a>
                 </div>
             </div>
         </div>
+        
     </div>
-</div>
 
-<!-- Features Section -->
-<div class="py-16 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h2 class="text-base font-semibold text-sky-600 tracking-wide uppercase">Why Choose TicketTrail</h2>
-            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                Better way to travel
-            </p>
-        </div>
-
-        <div class="mt-10">
-            <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-                <!-- Feature 1 -->
-                <div
-                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">Best Price Guarantee</h3>
-                    <p class="mt-2 text-base text-gray-500 text-center">We compare hundreds of sites to find you the
-                        absolute lowest prices.</p>
-                </div>
-
-                <!-- Feature 2 -->
-                <div
-                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">Secure Booking</h3>
-                    <p class="mt-2 text-base text-gray-500 text-center">Your data is protected with state-of-the-art
-                        encryption technology.</p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div
-                    class="flex flex-col items-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-sky-500 text-white mb-4">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">Instant Confirmation</h3>
-                    <p class="mt-2 text-base text-gray-500 text-center">Get your e-tickets delivered to your inbox
-                        immediately after booking.</p>
-                </div>
-            </div>
-        </div>
+    <!-- Loader -->
+    <div id="loader" class="hidden fixed inset-0 bg-white/90 backdrop-blur-md z-[100] flex flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-[#003554]"></div>
+        <p class="mt-4 text-[#003554] font-bold text-lg animate-pulse">Finding your flights...</p>
     </div>
+
 </div>
 {% endblock %}

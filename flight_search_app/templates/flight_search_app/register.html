@@ -1,97 +1,132 @@
 {% extends 'flight_search_app/base.html' %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
-        <div class="text-center">
-            <h2 class="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">
-                Create Account
-            </h2>
-            <p class="mt-2 text-sm text-gray-600">
-                Already have an account?
-                <a href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}"
-                    class="font-medium text-sky-600 hover:text-sky-500 transition-colors">
-                    Sign in
+<div class="min-h-screen bg-slate-50 relative overflow-hidden">
+    <!-- Blue Background Shape -->
+    <div class="absolute top-0 left-0 w-full h-[50vh] bg-blue-700 rounded-b-[3rem] z-0"></div>
+
+    <div class="relative z-10 flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8 py-10">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10">
+            
+            <div class="flex items-center mb-6">
+                <a href="{% url 'home' %}" class="text-gray-400 hover:text-blue-600 transition-colors mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
                 </a>
-            </p>
-        </div>
-        <form class="mt-8 space-y-6" method="POST">
-            {% csrf_token %}
-
-            <div class="space-y-5">
-                <!-- Username -->
-                <div>
-                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <div class="mt-1">{{ form.username }}</div>
-                    {% if form.username.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Full Name -->
-                <div>
-                    <label for="id_full_name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <div class="mt-1">{{ form.full_name }}</div>
-                    {% if form.full_name.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Email -->
-                <div>
-                    <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <div class="mt-1">{{ form.email }}</div>
-                    {% if form.email.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Country -->
-                <div>
-                    <label for="id_country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                    <div class="mt-1">{{ form.country }}</div>
-                    {% if form.country.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.country.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Postal Code -->
-                <div>
-                    <label for="id_postal_code" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                    <div class="mt-1">{{ form.postal_code }}</div>
-                    {% if form.postal_code.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.postal_code.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <div class="mt-1">{{ form.password1 }}</div>
-                    <p class="mt-1 text-xs text-gray-400">{{ form.password1.help_text }}</p>
-                    {% if form.password1.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Password Confirmation -->
-                <div>
-                    <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">Confirm
-                        Password</label>
-                    <div class="mt-1">{{ form.password2 }}</div>
-                    {% if form.password2.errors %}
-                    <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
-                    {% endif %}
-                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Sign Up</h2>
             </div>
 
-            <div>
+            <form class="space-y-5" method="POST">
+                {% csrf_token %}
+                
+                <div class="space-y-4">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="id_full_name" class="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                         <div class="relative">{{ form.full_name }}</div>
+                        {% if form.full_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Username -->
+                    <div>
+                        <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                        <div class="relative">{{ form.username }}</div>
+                        {% if form.username.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="id_email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                        <div class="relative">{{ form.email }}</div>
+                        {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Country & Postal Code Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="id_country" class="block text-sm font-semibold text-gray-700 mb-1">Country</label>
+                            <div class="relative">{{ form.country }}</div>
+                        </div>
+                        <div>
+                            <label for="id_postal_code" class="block text-sm font-semibold text-gray-700 mb-1">Postal Code</label>
+                            <div class="relative">{{ form.postal_code }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Password Fields -->
+                    <div>
+                        <label for="id_password1" class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                        <div class="relative">{{ form.password1 }}</div>
+                        <p class="mt-1 text-xs text-gray-400">{{ form.password1.help_text }}</p>
+                        {% if form.password1.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                     <div>
+                        <label for="id_password2" class="block text-sm font-semibold text-gray-700 mb-1">Confirm Password</label>
+                        <div class="relative">{{ form.password2 }}</div>
+                        {% if form.password2.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
                 <button type="submit"
-                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-all shadow-md hover:shadow-lg">
-                    Register
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-blue-200 hover:shadow-lg mt-6">
+                    Sign Up
                 </button>
+            </form>
+
+            <div class="mt-8">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Or</span>
+                    </div>
+                </div>
+
+                 <div class="mt-6 flex justify-center gap-4">
+                    <!-- Social Buttons -->
+                    <button class="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                              <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                              <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                              <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                              <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.789 L -6.704 42.299 C -8.804 40.309 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                            </g>
+                          </svg>
+                    </button>
+                    <button class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors border border-blue-100">
+                        <svg class="h-6 w-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </button>
+                    <button class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors border border-blue-100">
+                        <svg class="h-6 w-6 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-gray-600">
+                        Have A Account? <a href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="font-bold text-gray-900 hover:text-blue-600 transition-colors">Login.</a>
+                    </p>
+                </div>
+
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -100,33 +135,23 @@
     input[type="text"],
     input[type="password"],
     input[type="email"] {
-        appearance: none;
-        display: block;
-        width: 100%;
         padding: 0.75rem 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-        color: #1f2937;
-        background-color: #fff;
-        font-size: 0.875rem;
-        line-height: 1.25rem;
-        transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        transition-duration: 150ms;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem; /* rounded-xl */
+        width: 100%;
+        transition: all 0.2s;
     }
 
     input[type="text"]:focus,
     input[type="password"]:focus,
     input[type="email"]:focus {
-        outline: 2px solid transparent;
-        outline-offset: 2px;
-        border-color: #0284c7;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        outline: none;
+        border-color: #3b82f6; /* blue-500 */
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     ul.errorlist {
         display: none;
-        /* Errors are handled individually above */
     }
 </style>
 {% endblock %}
