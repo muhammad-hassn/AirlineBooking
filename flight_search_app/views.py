@@ -1,10 +1,11 @@
 import os
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from amadeus import Client, ResponseError
-from .models import UserContact, PaymentAttempt
+from .models import UserContact, PaymentAttempt, Airport
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from .utils import get_iata_code
 
@@ -45,8 +46,8 @@ def about(request):
 @login_required(login_url='login')
 def search_results(request):
     if request.method == 'GET':
-        raw_origin = request.GET.get('origin')
-        raw_destination = request.GET.get('destination')
+        raw_origin = request.GET.get('origin') or request.GET.get('origin_label')
+        raw_destination = request.GET.get('destination') or request.GET.get('destination_label')
         departure_date = request.GET.get('departure_date')
         adults = request.GET.get('adults', 1)
 
@@ -91,13 +92,24 @@ def search_results(request):
                 stops_count = len(segments) - 1
                 stop_info = "NON-STOP" if stops_count == 0 else f"{stops_count} STOP{'S' if stops_count > 1 else ''}"
 
+                # Lookup airport names
+                dep_code = first_segment['departure']['iataCode']
+                arr_code = last_segment['arrival']['iataCode']
+                
+                # Simple caching or direct lookup
+                dep_airport = Airport.objects.filter(iata_code=dep_code).first()
+                arr_airport = Airport.objects.filter(iata_code=arr_code).first()
+
                 flight_data = {
                     'airline': first_segment['carrierCode'], 
                     'flight_number': f"{first_segment['carrierCode']}-{first_segment['number']}",
                     'departure_time': first_segment['departure']['at'].replace('T', ' ')[:16], # YYYY-MM-DD HH:MM
-                    'departure_airport': first_segment['departure']['iataCode'],
+                    'departure_airport': dep_code,
+                    'departure_airport_name': dep_airport.name if dep_airport else dep_code,
                     'arrival_time': last_segment['arrival']['at'].replace('T', ' ')[:16],
-                    'arrival_airport': last_segment['arrival']['iataCode'],
+                    'arrival_airport': arr_code,
+                    'arrival_airport_name': arr_airport.name if arr_airport else arr_code,
+                    'arrival_city': arr_airport.city if arr_airport else "Unknown City",
                     'duration': format_duration(itinerary['duration']),
                     'stops': stop_info,
                     'price': offer['price']['total'],
@@ -234,3 +246,99 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect('home')
+    return redirect('home')
+
+def search_airports(request):
+    term = request.GET.get('q', '').strip()
+    if len(term) < 1:
+        return JsonResponse({'airports': [], 'cities': [], 'countries': []})
+
+    from django.db.models import Q
+    from .models import Airport
+    
+    # 1. Direct Airport Matches (Code or Name)
+    airport_qs = Airport.objects.filter(
+        Q(iata_code__icontains=term) | Q(name__icontains=term)
+    ).order_by('-popularity')[:10]
+    
+    airports_data = [{
+        'code': a.iata_code,
+        'name': a.name,
+        'city': a.city,
+        'country': a.country
+    } for a in airport_qs]
+
+    # 2. City Matches
+    city_qs = Airport.objects.filter(city__icontains=term).order_by('city', '-popularity')
+    cities_map = {}
+    for a in city_qs:
+        key = f"{a.city}, {a.country}"
+        if key not in cities_map:
+            cities_map[key] = {'name': a.city, 'country': a.country, 'bg_name': key, 'airports': []}
+        cities_map[key]['airports'].append({
+            'code': a.iata_code,
+            'name': a.name
+        })
+    cities_data = list(cities_map.values())[:10]
+
+    # 3. Country Matches
+    country_qs = Airport.objects.filter(country__icontains=term).order_by('country', '-popularity')
+    countries_map = {}
+    for a in country_qs:
+        key = a.country
+        if key not in countries_map:
+            countries_map[key] = {'name': a.country, 'airports': []}
+        # Limit airports per country to top 10
+        if len(countries_map[key]['airports']) < 10:
+            countries_map[key]['airports'].append({
+                'code': a.iata_code,
+                'name': a.name,
+                'city': a.city
+            })
+    countries_data = list(countries_map.values())[:10]
+
+    return JsonResponse({
+        'airports': airports_data,
+        'cities': cities_data,
+        'countries': countries_data
+    })
+
+def search_cities(request):
+    """
+    API endpoint to search for cities, optionally filtered by country.
+    Usage: /api/search_cities/?q=Lon&country=United+Kingdom
+    """
+    term = request.GET.get('q', '').strip()
+    country_filter = request.GET.get('country', '').strip()
+    
+    from django.db.models import Q
+    from .models import Airport
+    
+    query = Airport.objects.all()
+    
+    if country_filter:
+        query = query.filter(country__icontains=country_filter)
+        
+    if term:
+        query = query.filter(Q(city__icontains=term) | Q(iata_code__icontains=term))
+        
+    query = query.order_by('-popularity')
+    
+    # Dedup by city name to avoid showing "London" multiple times (for LHR, LGW etc)
+    seen_cities = set()
+    results = []
+    
+    for airport in query:
+        city_key = f"{airport.city}, {airport.country}"
+        if city_key not in seen_cities:
+            seen_cities.add(city_key)
+            results.append({
+                'city': airport.city,
+                'country': airport.country,
+                'code': airport.iata_code, # Use the most popular airport's code as a default
+                'name': f"{airport.city}, {airport.country}"
+            })
+            if len(results) >= 10:
+                break
+                
+    return JsonResponse({'cities': results})

@@ -37,3 +37,14 @@ class PaymentAttempt(models.Model):
 
     def __str__(self):
         return f"{self.user.name} - {self.amount} {self.currency} - {self.status}"
+
+class Airport(models.Model):
+    iata_code = models.CharField(max_length=3, unique=True, db_index=True)
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    popularity = models.IntegerField(default=0)  # For sorting suggestions
+
+    def __str__(self):
+        return f"{self.city} ({self.iata_code})" 
+

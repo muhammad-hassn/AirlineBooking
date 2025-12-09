@@ -3,132 +3,193 @@
 {% block navbar_class %}absolute w-full z-50 bg-transparent transition-all duration-300{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    /* Custom Scrollbar for Dropdown */
+    .suggestions-list::-webkit-scrollbar {
+        width: 8px;
+    }
+    .suggestions-list::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    .suggestions-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1; 
+        border-radius: 4px;
+    }
+    .suggestions-list::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; 
+    }
+</style>
+
 <div class="relative min-h-screen flex flex-col font-sans">
     <!-- Background Image -->
-    <div class="absolute inset-0 z-0 bg-slate-200">
+    <div class="absolute inset-0 z-0 bg-slate-900">
         <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=2021&q=80" 
              alt="Travel Desktop Background" 
-             class="w-full h-full object-cover hidden md:block" />
+             class="w-full h-full object-cover opacity-60 hidden md:block" />
         <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2073&q=80" 
              alt="Travel Mobile Background" 
-             class="w-full h-full object-cover block md:hidden" />
+             class="w-full h-full object-cover opacity-60 block md:hidden" />
         
         <!-- Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-white/10 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-gray-50/50 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
     </div>
 
     <!-- Main Content -->
-    <div class="relative z-10 flex-grow flex flex-col justify-center px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full pt-20">
+    <div class="relative z-10 flex-grow flex flex-col justify-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pt-28 pb-12">
         
         <!-- Hero Text -->
-        <div class="max-w-2xl mt-10 lg:mt-0">
-            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6 drop-shadow-sm">
-                Your Gateway To The <br/> World's Most <br/> Exciting Destinations.
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg tracking-tight">
+                Discover Your Next <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Adventure</span>
             </h1>
-            <p class="text-lg text-slate-700 mb-8 max-w-lg font-medium leading-relaxed drop-shadow-sm">
-                Don't miss out on our exclusive airline discounts! Book now and enjoy amazing savings on your next flight with TicketTrail.
+            <p class="text-lg sm:text-xl text-slate-200 mb-8 font-medium leading-relaxed drop-shadow-md max-w-2xl mx-auto">
+                Explore flights to over 100 countries. Compare airlines, find the best deals, and book your journey seamlessly.
             </p>
-            <a href="#search-widget" class="inline-block bg-[#003554] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#002840] transition-colors shadow-lg tracking-wide uppercase text-sm">
-                Book Now
-            </a>
         </div>
 
-        <!-- Spacer -->
-        <div class="flex-grow"></div>
-
         <!-- Search Widget Area -->
-        <div id="search-widget" class="w-full pb-10 mt-10 lg:mt-20">
+        <div id="search-widget" class="w-full max-w-5xl mx-auto">
             <!-- Glass Container -->
-            <div class="bg-white/60 backdrop-blur-xl rounded-t-3xl shadow-2xl overflow-hidden border border-white/50">
-                <!-- Tabs -->
-                <div class="flex items-center space-x-4 md:space-x-8 px-4 md:px-8 py-4 border-b border-white/30 text-slate-800 font-semibold text-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
-                    <button class="flex items-center space-x-2 text-[#003554] focus:outline-none flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-visible border border-white/20 relative z-20">
+                
+                <!-- Format Tabs -->
+                <div class="flex items-center space-x-6 px-6 py-4 border-b border-gray-200 text-gray-500 font-medium text-sm">
+                    <button class="flex items-center space-x-2 text-blue-600 font-bold focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         <span>Round-trip</span>
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <button class="flex items-center space-x-2 hover:text-[#003554] transition-colors focus:outline-none flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <span>1 Adult</span>
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <button class="flex items-center space-x-2 hover:text-[#003554] transition-colors focus:outline-none flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
-                        <span>Economy</span>
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="flex-grow min-w-[20px]"></div>
-                    <button class="text-sm font-medium text-slate-600 hover:text-slate-900 flex items-center flex-shrink-0">
-                        Explore Map <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </button>
+                    
+                    <!-- 1 Adult Dropdown -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 hover:text-blue-600 transition-colors focus:outline-none" onclick="document.getElementById('passenger-dropdown').classList.toggle('hidden')">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            <span id="passenger-label">1 Adult</span>
+                        </button>
+                        <div id="passenger-dropdown" class="hidden absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 p-2 z-50">
+                            <div class="flex flex-col space-y-1">
+                                <button onclick="setPassengers(1)" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">1 Adult</button>
+                                <button onclick="setPassengers(2)" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">2 Adults</button>
+                                <button onclick="setPassengers(3)" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">3 Adults</button>
+                                <button onclick="setPassengers(4)" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">4 Adults</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Economy Dropdown -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 hover:text-blue-600 transition-colors focus:outline-none" onclick="document.getElementById('class-dropdown').classList.toggle('hidden')">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span id="class-label">Economy</span>
+                        </button>
+                        <div id="class-dropdown" class="hidden absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 p-2 z-50">
+                            <div class="flex flex-col space-y-1">
+                                <button onclick="selectClass('Economy')" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">Economy</button>
+                                <button onclick="selectClass('Business')" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">Business</button>
+                                <button onclick="selectClass('First Class')" class="text-left px-4 py-2 hover:bg-blue-50 rounded text-gray-700">First Class</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Inputs Row -->
-                <form action="{% url 'results' %}" method="GET" class="p-0 lg:flex w-full" onsubmit="document.getElementById('loader').classList.remove('hidden')">
+                <form action="{% url 'results' %}" method="GET" class="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-2">
+                    <input type="hidden" name="adults" id="adults-input" value="1">
+                    <input type="hidden" name="flight_class" id="class-input" value="Economy">
                     
-                    <!-- From -->
-                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
-                        <label for="origin" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">From</label>
-                        <div class="flex items-center">
-                            <input type="text" name="origin" id="origin" placeholder="City or Airport" required
-                                class="w-full bg-transparent border-none p-0 text-xl font-bold text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
+                    <!-- Origin -->
+                    <div class="col-span-1 lg:col-span-4 relative group">
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 hover:border-blue-400 hover:bg-white transition-all cursor-text" onclick="document.getElementById('origin_label').focus()">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">From</label>
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                
+                                <input type="hidden" name="origin" id="origin_code">
+                                <input type="text" name="origin_label" id="origin_label" placeholder="Country, City or Airport" autocomplete="off"
+                                    class="w-full bg-transparent border-none p-0 text-gray-800 font-bold placeholder-gray-400 focus:ring-0 focus:outline-none truncate"
+                                    oninput="handleSearch(this, 'origin_results', 'origin_code')"
+                                    onfocus="if(this.value.length > 0) document.getElementById('origin_results').classList.remove('hidden')"
+                                >
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-500 mt-1 truncate">Origin location</p>
+                        <!-- Dropdown -->
+                        <div id="origin_results" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto suggestions-list z-50">
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
 
-                    <!-- To -->
-                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
-                         <label for="destination" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">To</label>
-                         <div class="flex items-center">
-                             <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                             <input type="text" name="destination" id="destination" placeholder="Enter a destination" required
-                                 class="w-full bg-transparent border-none p-0 text-xl font-medium text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
-                         </div>
+                    <!-- Destination -->
+                    <div class="col-span-1 lg:col-span-4 relative group">
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 hover:border-blue-400 hover:bg-white transition-all cursor-text" onclick="document.getElementById('destination_label').focus()">
+                            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">To</label>
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                
+                                <input type="hidden" name="destination" id="destination_code">
+                                <input type="text" name="destination_label" id="destination_label" placeholder="Country, City or Airport" autocomplete="off" 
+                                    class="w-full bg-transparent border-none p-0 text-gray-800 font-bold placeholder-gray-400 focus:ring-0 focus:outline-none truncate"
+                                    oninput="handleSearch(this, 'destination_results', 'destination_code')"
+                                    onfocus="if(this.value.length > 0) document.getElementById('destination_results').classList.remove('hidden')"
+                                >
+                            </div>
+                        </div>
+                         <!-- Dropdown -->
+                         <div id="destination_results" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto suggestions-list z-50">
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
 
-                    <!-- Dates -->
-                    <div class="relative group flex-grow lg:w-1/4 border-b lg:border-b-0 lg:border-r border-slate-300/50 p-6 hover:bg-white/20 transition-colors cursor-pointer">
-                         <div class="flex space-x-4 h-full items-center">
-                             <div>
-                                 <label for="departure_date" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Departure</label>
-                                 <div class="flex items-center">
-                                     <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                     <input type="date" name="departure_date" id="departure_date" required
-                                         class="w-full bg-transparent border-none p-0 text-sm font-bold text-slate-800 placeholder-slate-400 focus:ring-0 focus:outline-none">
-                                 </div>
+                    <!-- Date -->
+                    <div class="col-span-1 lg:col-span-2 relative group">
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 hover:border-blue-400 hover:bg-white transition-all cursor-pointer h-full flex flex-col justify-center">
+                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Departure</label>
+                             <div class="flex items-center">
+                                 <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                 <input type="date" name="departure_date" id="departure_date" required placeholder="Select Date"
+                                     class="w-full bg-transparent border-none p-0 text-gray-800 font-bold placeholder-gray-400 focus:ring-0 focus:outline-none">
                              </div>
-                             <!-- Hidden return date for visual match (optional) or functionality -->
-                             <div class="hidden lg:block w-px h-10 bg-slate-300"></div>
-                             <div class="hidden lg:block opacity-50">
-                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Return</label>
-                                 <div class="flex items-center text-slate-400 cursor-not-allowed">
-                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                     <span class="text-sm font-bold">Add Return</span>
-                                 </div>
-                             </div>
-                         </div>
+                        </div>
                     </div>
-                
-                    <!-- Hidden fields for defaults -->
-                    <input type="hidden" name="adults" value="1">
-                    
-                    <!-- Search Button -->
-                    <div class="lg:w-1/5 p-4 flex items-center justify-center">
-                        <button type="submit" class="w-full h-full min-h-[60px] bg-[#003554] hover:bg-[#002840] text-white rounded-lg font-bold text-lg shadow-lg flex items-center justify-center transition-all transform hover:scale-[1.02]">
-                            <span>Show flights</span>
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+                    <!-- Button -->
+                    <div class="col-span-1 lg:col-span-2">
+                        <button type="submit" class="w-full h-full min-h-[64px] bg-[#003554] hover:bg-[#002840] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl flex items-center justify-center transition-all transform hover:scale-[1.02]">
+                            <span class="mr-2">Search</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
                     </div>
                 </form>
+            </div>
+            
+            <!-- Quick Tags (Demo) -->
+            <div class="mt-4 flex flex-wrap gap-2 justify-center lg:justify-start px-2">
+                <span class="text-xs font-medium text-slate-400 uppercase tracking-wider mr-2 py-1">Popular:</span>
+                <button onclick="setSearch('LHR', 'London Heathrow', 'JFK', 'New York JFK')" class="text-xs bg-slate-800/50 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-full border border-slate-700 transition-colors">London to New York</button>
+                <button onclick="setSearch('DXB', 'Dubai Int', 'LHE', 'Lahore')" class="text-xs bg-slate-800/50 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-full border border-slate-700 transition-colors">Dubai to Lahore</button>
+                <button onclick="setSearch('SIN', 'Singapore Changi', 'SYD', 'Sydney')" class="text-xs bg-slate-800/50 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-full border border-slate-700 transition-colors">Singapore to Sydney</button>
+            </div>
+        </div>
 
-                <!-- Footer Links in Widget -->
-                <div class="bg-white/40 px-8 py-4 flex justify-between text-xs font-bold text-slate-700 tracking-wider uppercase backdrop-blur-sm border-t border-white/30 hidden sm:flex">
-                     <a href="#" class="hover:text-[#003554] transition-colors">Manage Booking</a>
-                     <a href="#" class="hover:text-[#003554] transition-colors">Check-in</a>
-                     <a href="#" class="hover:text-[#003554] transition-colors">Travel Points</a>
-                     <a href="#" class="hover:text-[#003554] transition-colors">Flight Schedule</a>
+        <!-- Stats Section (Animated) -->
+        <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white" id="stats-section">
+            <div class="p-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700 transform transition hover:scale-105">
+                <div class="text-4xl lg:text-5xl font-extrabold text-[#00a8e8] mb-2 font-mono flex justify-center items-baseline">
+                    <span class="counter" data-target="1000000">0</span><span class="text-2xl">+</span>
                 </div>
+                <div class="text-sm font-bold tracking-widest uppercase text-slate-300">Active Users</div>
+            </div>
+            <div class="p-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700 transform transition hover:scale-105">
+                <div class="text-4xl lg:text-5xl font-extrabold text-[#00a8e8] mb-2 font-mono flex justify-center items-baseline">
+                    <span class="counter" data-target="600">0</span><span class="text-2xl">+</span>
+                </div>
+                <div class="text-sm font-bold tracking-widest uppercase text-slate-300">Airlines Partnered</div>
+            </div>
+            <div class="p-6 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700 transform transition hover:scale-105">
+                <div class="text-4xl lg:text-5xl font-extrabold text-[#e80054] mb-2 font-mono flex justify-center items-baseline">
+                    <span class="counter" data-target="100">0</span><span class="text-2xl">+</span>
+                </div>
+                <div class="text-sm font-bold tracking-widest uppercase text-slate-300">Countries Covered</div>
             </div>
         </div>
         
@@ -141,4 +202,305 @@
     </div>
 
 </div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // 1. Date Picker (Flatpickr)
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#departure_date", {
+            minDate: "today",
+            maxDate: new Date().fp_incr(540),
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "D, j M Y", 
+            disableMobile: "true" // Force custom UI on mobile for better styling
+        });
+    });
+
+    // 2. Autocomplete Logic
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
+    function selectLocation(code, name, inputId, hiddenId, listId) {
+        document.getElementById(inputId).value = `${name} (${code})`;
+        document.getElementById(hiddenId).value = code;
+        document.getElementById(listId).classList.add('hidden');
+        document.getElementById(listId).innerHTML = ''; // Clear to reset state
+    }
+
+    window.toggleCity = function(bgName) {
+        const el = document.getElementById('group-' + bgName);
+        if(el.classList.contains('hidden')) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    }
+
+    const performSearch = async (input, listId, hiddenId) => {
+        const query = input.value;
+        const listContainer = document.getElementById(listId);
+        
+        // Reset navigation state
+        input.dataset.selectionIndex = -1;
+
+        if (query.length < 2) {
+            listContainer.innerHTML = '';
+            listContainer.classList.add('hidden');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/search_airports/?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.airports.length === 0 && data.cities.length === 0 && data.countries.length === 0) {
+                 listContainer.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No results found for "${query}"</div>`;
+                 listContainer.classList.remove('hidden');
+                 return;
+            }
+
+            let html = '';
+            let itemIndex = 0;
+
+            // Helper to create selectable item
+            const createItem = (code, name, subtitle, clickAction) => {
+                const idx = itemIndex++;
+                return `
+                    <div id="${listId}-item-${idx}" 
+                         data-idx="${idx}"
+                         onclick="${clickAction}" 
+                         class="suggestion-item flex items-center justify-between px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors"
+                         role="option"
+                         aria-selected="false"
+                    >
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 text-blue-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-800">${name}</div>
+                                <div class="text-xs text-gray-500">${subtitle}</div>
+                            </div>
+                        </div>
+                        <div class="text-sm font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">${code}</div>
+                    </div>
+                `;
+            };
+
+            // A) Airports
+            if (data.airports.length > 0) {
+                html += `<div class="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-widest">Airports</div>`;
+                data.airports.forEach(a => {
+                    html += createItem(a.code, a.name, `${a.city}, ${a.country}`, `selectLocation('${a.code}', '${a.name}', '${input.id}', '${hiddenId}', '${listId}')`);
+                });
+            }
+
+            // B) Cities
+            if (data.cities.length > 0) {
+                html += `<div class="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-widest border-t border-gray-200">Cities</div>`;
+                data.cities.forEach(c => {
+                    const cleanId = c.bg_name.replace(/[^a-zA-Z0-9]/g, '');
+                    html += `
+                        <div class="border-b border-gray-100 last:border-0">
+                            <div class="px-4 py-2 text-sm font-bold text-gray-800 bg-gray-50/50">${c.name}</div>
+                            ${c.airports.map(a => createItem(a.code, a.name, c.country, `selectLocation('${a.code}', '${a.name}', '${input.id}', '${hiddenId}', '${listId}')`)).join('')}
+                        </div>
+                    `;
+                });
+            }
+
+            // C) Countries
+            if (data.countries.length > 0) {
+                html += `<div class="bg-gray-50 px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-widest border-t border-gray-200">Countries</div>`;
+                data.countries.forEach(c => {
+                    html += `
+                        <div class="border-b border-gray-100 last:border-0">
+                            <div class="px-4 py-2 text-sm font-bold text-gray-800 bg-gray-50/50 flex justify-between items-center">
+                                <span>${c.name}</span>
+                                <span class="text-xs font-normal text-gray-400">All Airports</span>
+                            </div>
+                            ${c.airports.map(a => createItem(a.code, a.name, a.city, `selectLocation('${a.code}', '${a.name}', '${input.id}', '${hiddenId}', '${listId}')`)).join('')}
+                        </div>
+                    `;
+                });
+            } else if (data.airports.length === 0 && data.cities.length === 0) {
+                // FALLBACK: Try searching for cities directly if main search failed (maybe it's a broad region or typo?)
+                // Actually, search_airports already checks countries. 
+                // If we are here, it means NO country, NO city, NO airport matched.
+                // But maybe we want to use search_cities API if we detect it might be a country?
+                // Let's rely on the expanded seed data for now.
+            }
+
+            listContainer.innerHTML = html;
+            listContainer.classList.remove('hidden');
+
+            listContainer.innerHTML = html;
+            listContainer.classList.remove('hidden');
+            
+            // Store count for navigation
+            input.dataset.maxIndex = itemIndex - 1;
+
+        } catch (error) {
+            console.error('Search error:', error);
+        }
+    }
+
+    // Create debounced search handlers for each input
+    const handleOriginSearch = debounce((input) => {
+        performSearch(input, 'origin_results', 'origin_code');
+    }, 300);
+
+    const handleDestinationSearch = debounce((input) => {
+        performSearch(input, 'destination_results', 'destination_code');
+    }, 300);
+
+    // Wrapper function for oninput events
+    function handleSearch(input, listId, hiddenId) {
+        if (listId === 'origin_results') {
+            handleOriginSearch(input);
+        } else if (listId === 'destination_results') {
+            handleDestinationSearch(input);
+        }
+    }
+
+    // Keyboard Navigation
+    function setupKeyboardNav(inputId, listId, hiddenId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        
+        input.addEventListener('keydown', (e) => {
+            if (list.classList.contains('hidden')) return;
+            
+            let currentIdx = parseInt(input.dataset.selectionIndex || -1);
+            const maxIdx = parseInt(input.dataset.maxIndex || -1);
+
+            // Down Arrow
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (currentIdx < maxIdx) {
+                    currentIdx++;
+                    highlightItem(currentIdx, listId);
+                    input.dataset.selectionIndex = currentIdx;
+                }
+            } 
+            // Up Arrow
+            else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentIdx > 0) {
+                    currentIdx--;
+                    highlightItem(currentIdx, listId);
+                    input.dataset.selectionIndex = currentIdx;
+                }
+            }
+            // Enter
+            else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentIdx >= 0) {
+                    const item = document.getElementById(`${listId}-item-${currentIdx}`);
+                    if (item) item.click();
+                } else {
+                     // Submit form if nothing selected? Or prevent?
+                     // If hidden value empty, maybe try to select first?
+                     // For now, let default enter behavior happen if nothing selected (submit form)
+                }
+            }
+            // Escape
+            else if (e.key === 'Escape') {
+                e.preventDefault();
+                list.classList.add('hidden');
+            }
+        });
+    }
+
+    function highlightItem(index, listId) {
+        // Remove previous highlight
+        document.querySelectorAll(`#${listId} .suggestion-item`).forEach(el => {
+            el.classList.remove('bg-blue-100');
+            el.setAttribute('aria-selected', 'false');
+        });
+        
+        const item = document.getElementById(`${listId}-item-${index}`);
+        if (item) {
+            item.classList.add('bg-blue-100');
+            item.setAttribute('aria-selected', 'true');
+            item.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    // Initialize Keyboard Nav
+    setupKeyboardNav('origin_label', 'origin_results', 'origin_code');
+    setupKeyboardNav('destination_label', 'destination_results', 'destination_code');
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.group')) {
+            document.querySelectorAll('.suggestions-list').forEach(el => el.classList.add('hidden'));
+        }
+    });
+
+    // Helper for demo buttons
+    function setSearch(origCode, origLabel, destCode, destLabel) {
+        document.getElementById('origin_code').value = origCode;
+        document.getElementById('origin_label').value = origLabel;
+        document.getElementById('destination_code').value = destCode;
+        document.getElementById('destination_label').value = destLabel;
+    }
+
+    // 3. Stats Animation (CountUp simplified)
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const counter = el.querySelector('.counter');
+                const target = parseInt(counter.dataset.target);
+                
+                let start = 0;
+                const duration = 2000; // 2s
+                const increment = target / (duration / 16);
+                
+                const animate = () => {
+                    start += increment;
+                    if (start < target) {
+                        counter.innerText = Math.floor(start).toLocaleString();
+                        requestAnimationFrame(animate);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+                requestAnimationFrame(animate);
+                
+                statsObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('#stats-section > div').forEach(el => statsObserver.observe(el));
+
+
+    // 4. Dropdown Logic
+    function setPassengers(count) {
+        document.getElementById('passenger-label').innerText = count + (count > 1 ? ' Adults' : ' Adult');
+        document.getElementById('passenger-dropdown').classList.add('hidden');
+        document.getElementById('adults-input').value = count;
+    }
+
+    function selectClass(cls) {
+        document.getElementById('class-label').innerText = cls;
+        document.getElementById('class-dropdown').classList.add('hidden');
+        document.getElementById('class-input').value = cls;
+    }
+
+</script>
+
 {% endblock %}
