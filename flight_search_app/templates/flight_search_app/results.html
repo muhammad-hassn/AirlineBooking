@@ -62,12 +62,15 @@
                         </h1>
                         <p class="text-slate-500 text-sm mt-1">
                             {% if flights %}Found {{ flights|length }} flights{% else %}No flights found{% endif %} • {{ flights.0.departure_time|slice:":10" }}
+                            {% if flight_class %} • {{ flight_class }}{% endif %}
+                            {% if adults %} • {{ adults }} Adult{{ adults|pluralize }}{% endif %}
                         </p>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <select class="form-select bg-slate-50 border-slate-200 rounded-lg text-sm text-slate-700 py-2 pl-3 pr-8 focus:ring-blue-500 focus:border-blue-500">
-                            <option>Cheapest First</option>
-                            <option>Fastest First</option>
+                        <select id="sort-dropdown" class="form-select bg-slate-50 border-slate-200 rounded-lg text-sm text-slate-700 py-2 pl-3 pr-8 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Sort By</option>
+                            <option value="cheapest" {% if sort_by == 'cheapest' %}selected{% endif %}>Cheapest First</option>
+                            <option value="fastest" {% if sort_by == 'fastest' %}selected{% endif %}>Fastest First</option>
                         </select>
                     </div>
                 </div>
@@ -126,8 +129,11 @@
 
                                 <!-- Price & Action -->
                                 <div class="w-full md:w-1/4 text-center md:text-right flex flex-col items-center md:items-end justify-center border-t md:border-t-0 border-slate-100 pt-4 md:pt-0 mt-4 md:mt-0">
-                                    <div class="text-3xl font-extrabold text-[#003554] mb-2">
+                                    <div class="text-3xl font-extrabold text-[#003554] mb-1">
                                         <span class="text-base font-medium text-slate-500 mr-1">{{ flight.currency }}</span>{{ flight.price }}
+                                    </div>
+                                    <div class="text-xs text-slate-500 mb-3">
+                                        for {{ flight.adults }} adult{{ flight.adults|pluralize }} • {{ flight.currency }} {{ flight.price_per_adult }}/person
                                     </div>
                                     <a href="{% url 'payment' %}?amount={{ flight.price }}&currency={{ flight.currency }}&route={{ origin }}+-%3E+{{ destination }}" 
                                        class="inline-block bg-[#f28b00] hover:bg-[#d97900] text-white px-6 py-3 rounded-lg font-bold shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-0.5 w-full md:w-auto">
@@ -137,10 +143,51 @@
 
                             </div>
                             
-                            <!-- Hidden Details Toggle (Optional) -->
+                            <!-- Hidden Details Toggle -->
                             <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center text-xs text-slate-500">
                                 <div>Operated by {{ flight.airline }}</div>
-                                <button class="text-blue-600 font-medium hover:underline">View Flight Details</button>
+                                <button onclick="toggleFlightDetails('flight-{{ forloop.counter }}')" class="text-blue-600 font-medium hover:underline focus:outline-none">
+                                    View Flight Details
+                                </button>
+                            </div>
+
+                            <!-- Expandable Flight Details Section -->
+                            <div id="flight-{{ forloop.counter }}" class="hidden mt-4 pt-4 border-t border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-3 text-sm">Flight Itinerary</h4>
+                                <div class="space-y-3">
+                                    {% for segment in flight.segments %}
+                                    <div class="bg-slate-50 rounded-lg p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <div class="font-bold text-slate-700">{{ segment.carrier }}-{{ segment.flight_number }}</div>
+                                                <div class="text-xs text-slate-500">Aircraft: {{ segment.aircraft }}</div>
+                                            </div>
+                                            <div class="text-xs text-slate-500">{{ segment.duration }}</div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4 mt-3">
+                                            <div>
+                                                <div class="text-xs text-slate-400 uppercase font-bold mb-1">Departure</div>
+                                                <div class="font-bold text-slate-800">{{ segment.departure_time|slice:"11:16" }}</div>
+                                                <div class="text-sm text-slate-600">{{ segment.departure_airport_name }}</div>
+                                                <div class="text-xs text-slate-500">{{ segment.departure_city }}, {{ segment.departure_airport }}</div>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs text-slate-400 uppercase font-bold mb-1">Arrival</div>
+                                                <div class="font-bold text-slate-800">{{ segment.arrival_time|slice:"11:16" }}</div>
+                                                <div class="text-sm text-slate-600">{{ segment.arrival_airport_name }}</div>
+                                                <div class="text-xs text-slate-500">{{ segment.arrival_city }}, {{ segment.arrival_airport }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if not forloop.last %}
+                                    <div class="flex items-center justify-center py-2">
+                                        <div class="text-xs text-amber-600 bg-amber-50 px-3 py-1 rounded-full font-medium">
+                                            ⏱ Layover
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
 
                         </div>
@@ -163,4 +210,26 @@
         </div>
     </div>
 </div>
+
+<script>
+// Sorting functionality
+document.getElementById('sort-dropdown').addEventListener('change', function() {
+    const sortValue = this.value;
+    if (sortValue) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sortValue);
+        window.location.href = url.toString();
+    }
+});
+
+// Toggle flight details
+function toggleFlightDetails(id) {
+    const element = document.getElementById(id);
+    if (element.classList.contains('hidden')) {
+        element.classList.remove('hidden');
+    } else {
+        element.classList.add('hidden');
+    }
+}
+</script>
 {% endblock %}

@@ -49,7 +49,9 @@ def search_results(request):
         raw_origin = request.GET.get('origin') or request.GET.get('origin_label')
         raw_destination = request.GET.get('destination') or request.GET.get('destination_label')
         departure_date = request.GET.get('departure_date')
-        adults = request.GET.get('adults', 1)
+        adults = int(request.GET.get('adults', 1))
+        flight_class = request.GET.get('flight_class', 'Economy')
+        sort_by = request.GET.get('sort_by', '')
 
         if not all([raw_origin, raw_destination, departure_date]):
             messages.error(request, "Please fill in all required fields.")
@@ -67,17 +69,29 @@ def search_results(request):
             messages.error(request, f"Could not find an airport for '{raw_destination}'. Please try a major city name or IATA code.")
             return redirect('home')
 
+        # Map UI class names to Amadeus API values
+        class_mapping = {
+            'Economy': 'ECONOMY',
+            'Business': 'BUSINESS',
+            'First Class': 'FIRST'
+        }
+        travel_class = class_mapping.get(flight_class, 'ECONOMY')
+
         amadeus = get_amadeus_client()
         flights = []
 
         try:
-            response = amadeus.shopping.flight_offers_search.get(
-                originLocationCode=origin,
-                destinationLocationCode=destination,
-                departureDate=departure_date,
-                adults=adults,
-                max=10
-            )
+            # Build API parameters
+            api_params = {
+                'originLocationCode': origin,
+                'destinationLocationCode': destination,
+                'departureDate': departure_date,
+                'adults': adults,
+                'travelClass': travel_class,
+                'max': 10
+            }
+            
+            response = amadeus.shopping.flight_offers_search.get(**api_params)
             
             for offer in response.data:
                 # We only process the first itinerary (one-way logic for now)
@@ -100,10 +114,48 @@ def search_results(request):
                 dep_airport = Airport.objects.filter(iata_code=dep_code).first()
                 arr_airport = Airport.objects.filter(iata_code=arr_code).first()
 
+                # Calculate price per adult
+                total_price = float(offer['price']['total'])
+                price_per_adult = total_price / adults if adults > 0 else total_price
+
+                # Convert duration to minutes for sorting
+                import re
+                duration_str = itinerary['duration']
+                hours = 0
+                minutes = 0
+                h_match = re.search(r'(\d+)H', duration_str)
+                if h_match:
+                    hours = int(h_match.group(1))
+                m_match = re.search(r'(\d+)M', duration_str)
+                if m_match:
+                    minutes = int(m_match.group(1))
+                duration_minutes = hours * 60 + minutes
+
+                # Build detailed segments info for "View Details"
+                detailed_segments = []
+                for seg in segments:
+                    seg_dep_airport = Airport.objects.filter(iata_code=seg['departure']['iataCode']).first()
+                    seg_arr_airport = Airport.objects.filter(iata_code=seg['arrival']['iataCode']).first()
+                    
+                    detailed_segments.append({
+                        'departure_time': seg['departure']['at'].replace('T', ' ')[:16],
+                        'departure_airport': seg['departure']['iataCode'],
+                        'departure_airport_name': seg_dep_airport.name if seg_dep_airport else seg['departure']['iataCode'],
+                        'departure_city': seg_dep_airport.city if seg_dep_airport else '',
+                        'arrival_time': seg['arrival']['at'].replace('T', ' ')[:16],
+                        'arrival_airport': seg['arrival']['iataCode'],
+                        'arrival_airport_name': seg_arr_airport.name if seg_arr_airport else seg['arrival']['iataCode'],
+                        'arrival_city': seg_arr_airport.city if seg_arr_airport else '',
+                        'duration': format_duration(seg.get('duration', '')),
+                        'carrier': seg['carrierCode'],
+                        'flight_number': seg['number'],
+                        'aircraft': seg.get('aircraft', {}).get('code', 'N/A')
+                    })
+
                 flight_data = {
                     'airline': first_segment['carrierCode'], 
                     'flight_number': f"{first_segment['carrierCode']}-{first_segment['number']}",
-                    'departure_time': first_segment['departure']['at'].replace('T', ' ')[:16], # YYYY-MM-DD HH:MM
+                    'departure_time': first_segment['departure']['at'].replace('T', ' ')[:16],
                     'departure_airport': dep_code,
                     'departure_airport_name': dep_airport.name if dep_airport else dep_code,
                     'arrival_time': last_segment['arrival']['at'].replace('T', ' ')[:16],
@@ -111,14 +163,25 @@ def search_results(request):
                     'arrival_airport_name': arr_airport.name if arr_airport else arr_code,
                     'arrival_city': arr_airport.city if arr_airport else "Unknown City",
                     'duration': format_duration(itinerary['duration']),
+                    'duration_minutes': duration_minutes,
                     'stops': stop_info,
-                    'price': offer['price']['total'],
+                    'price': f"{total_price:.2f}",
+                    'price_per_adult': f"{price_per_adult:.2f}",
                     'currency': offer['price']['currency'],
                     'id': offer['id'],
                     'origin': origin.upper(),
-                    'destination': destination.upper()
+                    'destination': destination.upper(),
+                    'adults': adults,
+                    'flight_class': flight_class,
+                    'segments': detailed_segments
                 }
                 flights.append(flight_data)
+
+            # Apply sorting
+            if sort_by == 'cheapest':
+                flights.sort(key=lambda x: float(x['price']))
+            elif sort_by == 'fastest':
+                flights.sort(key=lambda x: x['duration_minutes'])
 
         except ResponseError as error:
             print(f"Amadeus Error: {error}")
@@ -130,7 +193,15 @@ def search_results(request):
             print(f"General Error: {e}")
             messages.error(request, "An unexpected error occurred.")
 
-        return render(request, 'flight_search_app/results.html', {'flights': flights, 'origin': origin, 'destination': destination})
+        context = {
+            'flights': flights,
+            'origin': origin,
+            'destination': destination,
+            'adults': adults,
+            'flight_class': flight_class,
+            'sort_by': sort_by
+        }
+        return render(request, 'flight_search_app/results.html', context)
     
     return redirect('home')
 

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -10,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hassan4080.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,6 +84,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'flight_search_app', 'static'),
